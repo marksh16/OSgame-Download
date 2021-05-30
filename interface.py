@@ -4,6 +4,7 @@ from tkinter import messagebox
 import datetime
 import calendar
 import os.path
+from sys import platform
 import os
 import sys
 from configparser import ConfigParser
@@ -19,9 +20,6 @@ config = ConfigParser()
 config.read('main/savedata/savefile.ini')
 directory = os.getcwd()
 
-if config['DEFAULT']['entered_desktop_without_perms'] == 'True':
-	MsgBox1 = messagebox.showwarning('You didnt enter the password', 'Enter the password', icon = 'warning')
-	root.destroy()
 
 now = datetime.datetime.now()
 year = now.year
@@ -84,8 +82,11 @@ def returngames():
 def returnallgames():
 	global allgames
 	return allgames
-#updates
 
+#updates
+def update():
+	os.execl(sys.executable, sys.executable, *sys.argv)
+	
 # main things
 def startapp(appid):
 	root.destroy()
@@ -97,7 +98,7 @@ def quit():
 	if MsgBox1 == 'yes':
 		with open('main/savedata/savefile.ini', 'w') as configfile:
 			config.write(configfile)
-		root.destroy()
+		sys.exit()
 
 
 
@@ -110,7 +111,7 @@ ymain = -2
 shutdown_ico = PhotoImage(file='main/icons/shut_down.png')
 
 cmd_ico = PhotoImage(file='main/icons/CMD.png')
-
+settings_ico = PhotoImage(file='main/icons/settings.png')
 
 
 
@@ -128,10 +129,25 @@ yborder1 = 2
 def cmdopen():
 	os.system(f'python {directory}\\main\\appdata\\CMD_app.py')
 
+settings_open = False
+def settingsopen():
+	global settings_open
+	settings_open = True
+	os.system(f'python {directory}\\main\\appdata\\settings_app.py')
+	if 'normal' == root.state():
+		update()
 cmd_enter = Button(tool, image=cmd_ico, bg=toolbar_color, highlightthickness=0, relief=FLAT, command=cmdopen)
-#placement
-cmd_enter.place(x=62, y=5)
+settings_enter = Button(tool, image=settings_ico, bg=toolbar_color, highlightthickness=0, relief=FLAT, command=settingsopen)
 
+#placement of buttons
+settings_enter.place(x=68, y=5)
+cmd_enter.place(x=108, y=5)
+
+
+
+
+
+# 
 main.place(x=xmain, y=ymain)
 tool.place(x=0, y=815)
 background.pack(expand=True)
@@ -141,4 +157,11 @@ border1.place(x=60, y=yborder1)
 shutdown.place(x=12, y=5)
 
 time()
+if platform == "darwin":
+    platform_error = messagebox.showwarning('You might expect some bugs.', 'Becouse your using a mac, there can be bugs.', icon='warning')
+
+
+if config['DEFAULT']['entered_desktop_without_perms'] == 'True':
+	MsgBox1 = messagebox.showwarning('You didnt enter the password', 'Enter the password', icon='warning')
+	root.destroy()
 root.mainloop()

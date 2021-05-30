@@ -15,18 +15,8 @@ config.read('main/savedata/savefile.ini')
 
 
 
-if config['DEFAULT']['entered_desktop_without_perms'] == 'True':
-	MsgBox1 = messagebox.showwarning('You didnt enter the password', 'Enter the password', icon = 'warning')
-	root.destroy()
 
-def center_window(w=500, h=400):
-	# get screen width and height
-	ws = root.winfo_screenwidth()
-	hs = root.winfo_screenheight()
-	# calculate position x, y
-	x = (ws/2) - (w/2)    
-	y = (hs/2) - (h/2)
-	root.geometry('%dx%d+%d+%d' % (w, h, x, y))
+
 
 
 
@@ -53,16 +43,20 @@ def quit():
 
 main = Frame()
 
-quitcmd = Button(width=2, height=1, text='X', bg='Red', command=quit)
-prew_commands = Listbox(main, width=100, height=17)
-input_entry = Entry(main, width=100)
+quitcmd = Button(width=3, height=1, text='X', bg='Red', command=quit)
+prew_commands = Listbox(main, width=300, height=50)
+input_entry = Entry(main, width=300)
 
 quitcmd.pack(anchor=E)
 main.pack(expand=True)
 prew_commands.pack()
 input_entry.pack()
 
-center_window(500, 300)
 
 root.bind('<Return>', retrieve_input)
+if config['DEFAULT']['entered_desktop_without_perms'] == 'True':
+	MsgBox1 = messagebox.showwarning(
+		'You didnt enter the password', 'Enter the password', icon='warning')
+	root.destroy()
+
 root.mainloop()
